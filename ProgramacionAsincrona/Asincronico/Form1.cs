@@ -19,9 +19,16 @@ namespace Asincronico
 
             //Version Asincrona
             loadingGIF.Visible = true;
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            //await Task.Delay(TimeSpan.FromSeconds(5));
+            await Esperar();
+            MessageBox.Show("No pasaron los 5 segundos");
             loadingGIF.Visible = false;
 
+        }
+
+        private async Task Esperar() 
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5));
         }
     }
 }

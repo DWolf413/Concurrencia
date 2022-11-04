@@ -88,7 +88,26 @@ namespace Asincronico
                 }
             });*/
 
-            await Task.WhenAll(tareas);
+            //await Task.WhenAll(tareas);
+            var respuestas = await Task.WhenAll(tareas);
+            var tarjetasRechazadas = new List<string>();
+
+            foreach (var respuesta in respuestas) 
+            {
+                var contenido = await respuesta.Content.ReadAsStringAsync();
+                var respuestaTarjeta = JsonConvert.DeserializeObject<RespuestaTarjeta>(contenido);
+
+                if (!respuestaTarjeta.Aprobada) 
+                {
+                    tarjetasRechazadas.Add(respuestaTarjeta.Tarjeta);
+                }
+
+            }
+
+            foreach (var tarjeta in tarjetasRechazadas) 
+            {
+                Console.WriteLine(tarjeta);
+            }
            
         }
 

@@ -34,12 +34,13 @@
             this.txtInput = new System.Windows.Forms.TextBox();
             this.Nombre = new System.Windows.Forms.Label();
             this.pgProcesamiento = new System.Windows.Forms.ProgressBar();
+            this.btnCancelar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.loadingGIF)).BeginInit();
             this.SuspendLayout();
             // 
             // btnIniciar
             // 
-            this.btnIniciar.Location = new System.Drawing.Point(299, 178);
+            this.btnIniciar.Location = new System.Drawing.Point(196, 178);
             this.btnIniciar.Name = "btnIniciar";
             this.btnIniciar.Size = new System.Drawing.Size(154, 37);
             this.btnIniciar.TabIndex = 0;
@@ -82,11 +83,23 @@
             this.pgProcesamiento.TabIndex = 4;
             this.pgProcesamiento.Visible = false;
             // 
+            // btnCancelar
+            // 
+            this.btnCancelar.Location = new System.Drawing.Point(363, 178);
+            this.btnCancelar.Name = "btnCancelar";
+            this.btnCancelar.Size = new System.Drawing.Size(137, 37);
+            this.btnCancelar.TabIndex = 5;
+            this.btnCancelar.Text = "Cancelar";
+            this.btnCancelar.UseMnemonic = false;
+            this.btnCancelar.UseVisualStyleBackColor = true;
+            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.pgProcesamiento);
             this.Controls.Add(this.Nombre);
             this.Controls.Add(this.txtInput);
@@ -108,5 +121,6 @@
         private TextBox txtInput;
         private Label Nombre;
         private ProgressBar pgProcesamiento;
+        private Button btnCancelar;
     }
 }

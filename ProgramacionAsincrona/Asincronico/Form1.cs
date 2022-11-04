@@ -8,6 +8,7 @@ namespace Asincronico
     {
         private string apiURL;
         private HttpClient httpClient;
+        private CancellationTokenSource cancellationTokenSource;
         public Form1()
         {
             InitializeComponent();
@@ -26,6 +27,7 @@ namespace Asincronico
             //Thread.Sleep(5000);
 
             //Version Asincrona
+            cancellationTokenSource = new CancellationTokenSource();
             loadingGIF.Visible = true;
             pgProcesamiento.Visible = true;
             var reportarProgreso = new Progress<int>(ResportarProgresoTareas);
@@ -42,17 +44,22 @@ namespace Asincronico
             {
                 //var saludo = await ObtenerSaludo(nombre);
                 //MessageBox.Show(saludo);
-                await ProcesarTarjetas(tarjetas, reportarProgreso);
+                await ProcesarTarjetas(tarjetas, reportarProgreso, cancellationTokenSource.Token);
             }
             catch (HttpRequestException ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+            catch (TaskCanceledException ex) 
+            {
+                MessageBox.Show("La operacion ha sido cancelada");
             }
 
 
             MessageBox.Show($"Operació finalizada en {stopwatch.ElapsedMilliseconds / 1000.0} segundos");
             loadingGIF.Visible = false;
             pgProcesamiento.Visible = false;
+            pgProcesamiento.Value = 0;
 
         }
 
@@ -61,7 +68,7 @@ namespace Asincronico
             pgProcesamiento.Value = porcentaje;
         }
 
-        private async Task ProcesarTarjetas(List<string> tarjetas, IProgress<int> progress = null) 
+        private async Task ProcesarTarjetas(List<string> tarjetas, IProgress<int> progress = null, CancellationToken cancellationToken = default) 
         {
             using var semaforo = new SemaphoreSlim(2);
             var tareas = new List<Task<HttpResponseMessage>>();
@@ -74,7 +81,7 @@ namespace Asincronico
                 await semaforo.WaitAsync();
                 try 
                 {
-                    var tareaInterna = await httpClient.PostAsync($"{apiURL}/tarjetas", content);
+                    var tareaInterna = await httpClient.PostAsync($"{apiURL}/tarjetas", content, cancellationToken);
 
                     
                     /*if (progress != null) 
@@ -179,6 +186,9 @@ namespace Asincronico
             }
         }
 
-
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            cancellationTokenSource?.Cancel();
+        }
     }
 }

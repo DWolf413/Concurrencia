@@ -76,7 +76,8 @@ namespace Asincronico
                 {
                     var tareaInterna = await httpClient.PostAsync($"{apiURL}/tarjetas", content);
 
-                    if (progress != null) 
+                    
+                    /*if (progress != null) 
                     {
                         indice++;
                         var porcentaje = (double)indice / tarjetas.Count;
@@ -84,7 +85,7 @@ namespace Asincronico
                         var porcentajeInt = (int)Math.Round(porcentaje,0);
                         progress.Report(porcentajeInt);
 
-                    }
+                    }*/
 
                     return tareaInterna;
                 }
@@ -95,7 +96,7 @@ namespace Asincronico
                 
             }).ToList();
 
-            
+
             //Creacion de un hilo para desbloquear UI
             /*
             await Task.Run(() =>
@@ -110,7 +111,22 @@ namespace Asincronico
             });*/
 
             //await Task.WhenAll(tareas);
-            var respuestas = await Task.WhenAll(tareas);
+            //var respuestas = await Task.WhenAll(tareas);
+            var respuestasTareas = Task.WhenAll(tareas);
+
+            if (progress != null) 
+            {
+                while (await Task.WhenAny(respuestasTareas, Task.Delay(1000)) != respuestasTareas) 
+                {
+                    var tareasCompletadas = tareas.Where(x => x.IsCompleted).Count();
+                    var porcentaje = (double)tareasCompletadas / tarjetas.Count;
+                    porcentaje = porcentaje * 100;
+                    var porcentajeInt = (int)Math.Round(porcentaje, 0);
+                    progress.Report(porcentajeInt);
+                }
+            }
+
+            var respuestas = await respuestasTareas;
             var tarjetasRechazadas = new List<string>();
 
             foreach (var respuesta in respuestas) 

@@ -27,11 +27,13 @@ namespace Asincronico
 
             //Version Asincrona
             loadingGIF.Visible = true;
+            pgProcesamiento.Visible = true;
+            var reportarProgreso = new Progress<int>(ResportarProgresoTareas);
             //await Task.Delay(TimeSpan.FromSeconds(5));
             // await Esperar();
             //var nombre = txtInput.Text;
 
-            var tarjetas =  await ObtenerTarjetasCredito(25000);
+            var tarjetas =  await ObtenerTarjetasCredito(20);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -40,7 +42,7 @@ namespace Asincronico
             {
                 //var saludo = await ObtenerSaludo(nombre);
                 //MessageBox.Show(saludo);
-                await ProcesarTarjetas(tarjetas);
+                await ProcesarTarjetas(tarjetas, reportarProgreso);
             }
             catch (HttpRequestException ex)
             {
@@ -50,13 +52,20 @@ namespace Asincronico
 
             MessageBox.Show($"Operació finalizada en {stopwatch.ElapsedMilliseconds / 1000.0} segundos");
             loadingGIF.Visible = false;
+            pgProcesamiento.Visible = false;
 
         }
 
-        private async Task ProcesarTarjetas(List<string> tarjetas) 
+        private void ResportarProgresoTareas(int porcentaje) 
+        { 
+            pgProcesamiento.Value = porcentaje;
+        }
+
+        private async Task ProcesarTarjetas(List<string> tarjetas, IProgress<int> progress = null) 
         {
-            using var semaforo = new SemaphoreSlim(4000);
+            using var semaforo = new SemaphoreSlim(2);
             var tareas = new List<Task<HttpResponseMessage>>();
+            var indice = 0;
 
             tareas = tarjetas.Select(async tarjeta =>
             {
@@ -65,7 +74,19 @@ namespace Asincronico
                 await semaforo.WaitAsync();
                 try 
                 {
-                    return await httpClient.PostAsync($"{apiURL}/tarjetas", content);
+                    var tareaInterna = await httpClient.PostAsync($"{apiURL}/tarjetas", content);
+
+                    if (progress != null) 
+                    {
+                        indice++;
+                        var porcentaje = (double)indice / tarjetas.Count;
+                        porcentaje = porcentaje * 100;
+                        var porcentajeInt = (int)Math.Round(porcentaje,0);
+                        progress.Report(porcentajeInt);
+
+                    }
+
+                    return tareaInterna;
                 }
                 finally 
                 { 

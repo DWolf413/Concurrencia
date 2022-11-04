@@ -28,6 +28,7 @@ namespace Asincronico
 
             //Version Asincrona
             cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
             loadingGIF.Visible = true;
             pgProcesamiento.Visible = true;
             var reportarProgreso = new Progress<int>(ResportarProgresoTareas);
@@ -67,6 +68,11 @@ namespace Asincronico
         private void ResportarProgresoTareas(int porcentaje) 
         { 
             pgProcesamiento.Value = porcentaje;
+        }
+
+        private Task ProcesarTarjetasMock(List<string> tarjetas, IProgress<int> progress = null, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
         }
 
         private async Task ProcesarTarjetas(List<string> tarjetas, IProgress<int> progress = null, CancellationToken cancellationToken = default) 
@@ -155,7 +161,24 @@ namespace Asincronico
             }
            
         }
+        private Task<List<string>> ObtenerTarjetasCreditoMock(int cantidadTarjetas, CancellationToken cancellationToken = default)
+        {
+            var tarjetas = new List<string>();
+            tarjetas.Add("000000000001");
 
+            return Task.FromResult(tarjetas);
+        }
+
+        private Task ObtenerTareaConError() 
+        {
+            return Task.FromException(new ApplicationException());
+        }
+
+        private Task ObtenerTareaCancelada()
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+            return Task.FromCanceled(cancellationTokenSource.Token);
+        }
         private async Task<List<string>> ObtenerTarjetasCredito(int cantidadTarjetas, CancellationToken cancellationToken = default)
         {
             return await Task.Run( () =>

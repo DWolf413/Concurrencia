@@ -33,8 +33,16 @@ namespace WebApi.Controllers
             //Console.WriteLine($"Hilo despuess del await: {Thread.CurrentThread.ManagedThreadId}");
 
             var esperar = RandomGen.NextDouble() * 10 + 1;
-            await Task.Delay((int)esperar * 1000);
+            //await Task.Delay((int)esperar * 1000);
+            OperacionVoidAsync();
             return $"Bye, {nombre}!";
+        }
+
+        //Anti-Patron async void
+        private async void OperacionVoidAsync()
+        {
+            await Task.Delay(1);
+            throw new ApplicationException();
         }
     }
 }

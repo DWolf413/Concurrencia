@@ -1,3 +1,7 @@
+using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Text;
+
 namespace Asincronico
 {
     public partial class Form1 : Form
@@ -24,20 +28,56 @@ namespace Asincronico
             //Version Asincrona
             loadingGIF.Visible = true;
             //await Task.Delay(TimeSpan.FromSeconds(5));
-            await Esperar();
-            var nombre = txtInput.Text;
+            // await Esperar();
+            //var nombre = txtInput.Text;
+
+            var tarjetas = ObtenerTarjetasCredito(25000);
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+
             try
             {
-                var saludo = await ObtenerSaludo(nombre);
-                MessageBox.Show(saludo);
+                //var saludo = await ObtenerSaludo(nombre);
+                //MessageBox.Show(saludo);
+                await ProcesarTarjetas(tarjetas);
             }
             catch (HttpRequestException ex)
             {
                 MessageBox.Show(ex.Message);
             }
-           
+
+
+            MessageBox.Show($"Operació finalizada en {stopwatch.ElapsedMilliseconds / 1000.0} segundos");
             loadingGIF.Visible = false;
 
+        }
+
+        private async Task ProcesarTarjetas(List<string> tarjetas) 
+        {
+            var tareas = new List<Task>();
+
+            foreach (var tarjeta in tarjetas)
+            {
+                var json = JsonConvert.SerializeObject(tarjeta);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var respuestasTask = httpClient.PostAsync($"{apiURL}/tarjetas", content);
+                tareas.Add(respuestasTask);
+            }
+
+            await Task.WhenAll(tareas);
+           
+        }
+
+        private List<string> ObtenerTarjetasCredito(int cantidadTarjetas)
+        {
+            var tarjetas = new List<string>();
+            for (int i = 0; i<cantidadTarjetas; i++)
+            {
+                tarjetas.Add(i.ToString().PadLeft(16,'0'));
+            }
+
+            return tarjetas;
         }
 
         private async Task Esperar() 

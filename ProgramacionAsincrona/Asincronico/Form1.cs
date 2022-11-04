@@ -55,8 +55,28 @@ namespace Asincronico
 
         private async Task ProcesarTarjetas(List<string> tarjetas) 
         {
-            var tareas = new List<Task>();
+            using var semaforo = new SemaphoreSlim(4000);
+            var tareas = new List<Task<HttpResponseMessage>>();
 
+            tareas = tarjetas.Select(async tarjeta =>
+            {
+                var json = JsonConvert.SerializeObject(tarjeta);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                await semaforo.WaitAsync();
+                try 
+                {
+                    return await httpClient.PostAsync($"{apiURL}/tarjetas", content);
+                }
+                finally 
+                { 
+                    semaforo.Release();
+                }
+                
+            }).ToList();
+
+            
+            //Creacion de un hilo para desbloquear UI
+            /*
             await Task.Run(() =>
             {
                 foreach (var tarjeta in tarjetas)
@@ -66,7 +86,7 @@ namespace Asincronico
                     var respuestasTask = httpClient.PostAsync($"{apiURL}/tarjetas", content);
                     tareas.Add(respuestasTask);
                 }
-            });
+            });*/
 
             await Task.WhenAll(tareas);
            

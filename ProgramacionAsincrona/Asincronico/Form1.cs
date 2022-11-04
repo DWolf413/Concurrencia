@@ -87,7 +87,7 @@ namespace Asincronico
             */
 
             //PAtron Reintento
-            loadingGIF.Visible = true;
+            //loadingGIF.Visible = true;
             //var reintentos = 3;
             //var tiempoEspera = 500;
 
@@ -138,6 +138,8 @@ namespace Asincronico
             
             loadingGIF.Visible = false;*/
 
+            //Patron Una Sola Trea
+            /*
             loadingGIF.Visible = true;
 
             cancellationTokenSource = new CancellationTokenSource();
@@ -164,9 +166,45 @@ namespace Asincronico
             Console.WriteLine(contenido.ToUpper());
 
             loadingGIF.Visible = false;
+            */
+
+            loadingGIF.Visible = true;
+            var tarea = EvaluarValor(txtInput.Text);
+            Console.WriteLine("Inicio");
+            Console.WriteLine($"Is Completed: {tarea.IsCompleted}");
+            Console.WriteLine($"Is Canceled: {tarea.IsCanceled}");
+            Console.WriteLine($"Is Faulted: {tarea.IsFaulted}");
+
+            try
+            {
+                await tarea;
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Exception: {ex.Message}");
+
+            }
+            Console.WriteLine("Fin");
+            Console.WriteLine("");
 
 
 
+            loadingGIF.Visible = false;
+
+
+
+        }
+
+        private Task EvaluarValor(string valor)
+        {
+            var tcs = new TaskCompletionSource<object>(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            if (valor == "1") tcs.SetResult(null);
+            else if (valor == "2") tcs.SetCanceled();
+            else tcs.SetException(new ApplicationException($"Valor invalido: {valor}"));
+
+            return tcs.Task;
         }
 
         private async Task<string> ObtenerAdios(string nombre, CancellationToken cancellationToken)

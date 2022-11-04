@@ -223,22 +223,40 @@ namespace Asincronico
             loadingGIF.Visible = false;
             */
 
+            cancellationTokenSource = new CancellationTokenSource();
+
             loadingGIF.Visible = true;
 
-            await foreach(var nombre in GenerarNombres())
+            try
             {
-                Console.WriteLine(nombre);
+                await foreach (var nombre in GenerarNombres(cancellationTokenSource.Token))
+                {
+                    Console.WriteLine(nombre);
+                    //break; -> Cancelar primera manera
+                }
             }
-            
+            catch (Exception)
+            {
+
+                Console.WriteLine("Operacion Cancelada");
+            }
+            finally
+            {
+                cancellationTokenSource?.Dispose();
+            }
+            Console.WriteLine("Fin");
+
             loadingGIF.Visible = false;
 
         }
 
-        private async IAsyncEnumerable<string> GenerarNombres() 
+        private async IAsyncEnumerable<string> GenerarNombres(CancellationToken cancellationToken = default) 
         {
             yield return "David";
             await Task.Delay(2000);
             yield return "Sofia";
+            await Task.Delay(2000);
+            yield return "Carson";
         }
 
         private Task EvaluarValor(string valor)

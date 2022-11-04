@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Asincronico
@@ -223,13 +224,63 @@ namespace Asincronico
             loadingGIF.Visible = false;
             */
 
+            //IAsynEnumerable
+            /*
             cancellationTokenSource = new CancellationTokenSource();
 
             loadingGIF.Visible = true;
 
+            //try
+            //{
+            //    await foreach (var nombre in GenerarNombres(cancellationTokenSource.Token))
+            //    {
+            //        Console.WriteLine(nombre);
+            //        //break; -> Cancelar primera manera
+            //    }
+            //}
+            //catch (Exception)
+            //{
+
+            //    Console.WriteLine("Operacion Cancelada");
+            //}
+            //finally
+            //{
+            //    cancellationTokenSource?.Dispose();
+            //}
+            //Console.WriteLine("Fin");
+
+            var nombresEnumerable = GenerarNombres();
+            await ProcesarNombre(nombresEnumerable);
+            Console.WriteLine("Fin");
+
+            loadingGIF.Visible = false;
+            */
+
+            //Sincrono dentro de Asincrono
+
+            loadingGIF.Visible = true;
+
+            //Anti-Patron: Sicrono dentro de asincrono
+            var valor = ObtenerValor().Result; //Bloquea hilo actual hasta obtener valor
+            Console.WriteLine(valor);
+
+            loadingGIF.Visible = false;
+
+
+        }
+
+        private async Task<string> ObtenerValor()
+        {
+            await Task.Delay(1000).ConfigureAwait(false); //para utilizar otro Hilo
+            return "David";
+        }
+        private async Task ProcesarNombre(IAsyncEnumerable<string> nombresEnumerable)
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+
             try
             {
-                await foreach (var nombre in GenerarNombres(cancellationTokenSource.Token))
+                await foreach (var nombre in nombresEnumerable.WithCancellation(cancellationTokenSource.Token))
                 {
                     Console.WriteLine(nombre);
                     //break; -> Cancelar primera manera
@@ -244,13 +295,11 @@ namespace Asincronico
             {
                 cancellationTokenSource?.Dispose();
             }
-            Console.WriteLine("Fin");
 
-            loadingGIF.Visible = false;
 
         }
 
-        private async IAsyncEnumerable<string> GenerarNombres(CancellationToken cancellationToken = default) 
+        private async IAsyncEnumerable<string> GenerarNombres([EnumeratorCancellation] CancellationToken cancellationToken = default) 
         {
             yield return "David";
             await Task.Delay(2000);

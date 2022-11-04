@@ -195,6 +195,8 @@ namespace Asincronico
             loadingGIF.Visible = false;
             */
 
+            //Cancelacion cualquier evento
+            /*
             loadingGIF.Visible = true;
 
             cancellationTokenSource = new CancellationTokenSource();
@@ -219,9 +221,23 @@ namespace Asincronico
             }
 
             loadingGIF.Visible = false;
+            */
 
+            loadingGIF.Visible = true;
 
+            foreach(var nombre in GenerarNombres())
+            {
+                Console.WriteLine(nombre);
+            }
+            
+            loadingGIF.Visible = false;
 
+        }
+
+        private IEnumerable<string> GenerarNombres() 
+        {
+            yield return "David";
+            yield return "Sofia";
         }
 
         private Task EvaluarValor(string valor)

@@ -16,13 +16,25 @@ namespace WebApi.Controllers
         [HttpGet("delay/{nombre}")]
         public async Task<ActionResult<string>> ObtenerSaludoConDelay(string nombre) 
         {
-            Console.WriteLine($"Hilo antes del await: {Thread.CurrentThread.ManagedThreadId}");
-            await Task.Delay(500);
-            Console.WriteLine($"Hilo despuess del await: {Thread.CurrentThread.ManagedThreadId}");
+            //Console.WriteLine($"Hilo antes del await: {Thread.CurrentThread.ManagedThreadId}");
+            //await Task.Delay(500);
+            //Console.WriteLine($"Hilo despuess del await: {Thread.CurrentThread.ManagedThreadId}");
 
             var esperar = RandomGen.NextDouble() * 10 + 1;
             await Task.Delay((int)esperar * 1000);
             return $"Hola, {nombre}!";
+        }
+
+        [HttpGet("adios/{nombre}")]
+        public async Task<ActionResult<string>> ObtenerAdiosConDelay(string nombre)
+        {
+            //Console.WriteLine($"Hilo antes del await: {Thread.CurrentThread.ManagedThreadId}");
+            //await Task.Delay(500);
+            //Console.WriteLine($"Hilo despuess del await: {Thread.CurrentThread.ManagedThreadId}");
+
+            var esperar = RandomGen.NextDouble() * 10 + 1;
+            await Task.Delay((int)esperar * 1000);
+            return $"Bye, {nombre}!";
         }
     }
 }

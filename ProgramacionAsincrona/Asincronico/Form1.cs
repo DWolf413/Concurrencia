@@ -112,7 +112,7 @@ namespace Asincronico
                     var contenido = await respuesta.Content.ReadAsStringAsync();
                     Console.WriteLine(contenido);
                 }
-            });*/
+            });
 
             //await Reintentar(ProcesarSaludo);
 
@@ -136,8 +136,58 @@ namespace Asincronico
                 Console.WriteLine("Exepcion atrapada");
             }
             
+            loadingGIF.Visible = false;*/
+
+            loadingGIF.Visible = true;
+
+            cancellationTokenSource = new CancellationTokenSource();
+            var token = cancellationTokenSource.Token;
+            var nombres = new string[] { "David", "Sofia", "Esteban", "Carson" };
+            //var tareasHTTP = nombres.Select(x => ObtenerSaludos2(x, token));
+            //var tarea = await Task.WhenAny(tareasHTTP);
+            //var contenido = await tarea;
+            //Console.WriteLine(contenido.ToUpper());
+            //cancellationTokenSource.Cancel();
+
+            //var tareasHTTP = nombres.Select(x =>
+            //{
+            //    Func<CancellationToken, Task<string>> fuction = (ct) => ObtenerSaludos2(x, ct);
+            //    return fuction;
+            //});
+
+            //var contenido = await EjecutarUno(tareasHTTP);
+            //Console.WriteLine(contenido.ToUpper());
+
+            var contenido = await EjecutarUno(
+                (ct) => ObtenerSaludos2("Sofia", ct),
+                (ct) => ObtenerAdios("Sofia", ct));
+            Console.WriteLine(contenido.ToUpper());
+
             loadingGIF.Visible = false;
 
+
+
+        }
+
+        private async Task<string> ObtenerAdios(string nombre, CancellationToken cancellationToken)
+        {
+            using (var respuesta = await httpClient.GetAsync($"{apiURL}/saludos/adios/{nombre}", cancellationToken))
+            {
+                var saludos = await respuesta.Content.ReadAsStringAsync();
+                Console.WriteLine(saludos);
+                return saludos;
+            }
+        }
+
+
+        private async Task<string> ObtenerSaludos2(string nombre, CancellationToken cancellationToken)
+        {
+            using (var respuesta = await httpClient.GetAsync($"{apiURL}/saludos/delay/{nombre}", cancellationToken))
+            {
+                var saludos = await respuesta.Content.ReadAsStringAsync();
+                Console.WriteLine(saludos);
+                return saludos;
+            }
         }
 
         private async Task ProcesarSaludo() 
@@ -185,6 +235,24 @@ namespace Asincronico
             }
 
             return await f();
+        }
+
+        private async Task<T> EjecutarUno<T>(IEnumerable<Func<CancellationToken, Task<T>>> funciones) 
+        { 
+            var cts = new CancellationTokenSource();
+            var tareas = funciones.Select(f => f(cts.Token));
+            var tarea = await Task.WhenAny(tareas);
+            cts.Cancel();
+            return await tarea;
+        }
+
+        private async Task<T> EjecutarUno<T>(params Func<CancellationToken, Task<T>>[] funciones)
+        {
+            var cts = new CancellationTokenSource();
+            var tareas = funciones.Select(f => f(cts.Token));
+            var tarea = await Task.WhenAny(tareas);
+            cts.Cancel();
+            return await tarea;
         }
 
         private async Task<string> ObtenerSaludos2(string nombre) 

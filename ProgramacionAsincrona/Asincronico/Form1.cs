@@ -87,7 +87,104 @@ namespace Asincronico
             */
 
             //PAtron Reintento
+            loadingGIF.Visible = true;
+            //var reintentos = 3;
+            //var tiempoEspera = 500;
 
+            /*for (int i = 0; i < reintentos; i++) 
+            {
+                try
+                {
+                    //Operaciion
+                    break;
+                }
+                catch (Exception)
+                {
+                    //loguear exepcion
+                    await Task.Delay(tiempoEspera);
+                }
+            }*/
+
+            /*await Reintentar(async () => {
+                using (var respuesta = await httpClient.GetAsync($"{apiURL}/saludos2/David")) 
+                { 
+                    respuesta.EnsureSuccessStatusCode();
+                    var contenido = await respuesta.Content.ReadAsStringAsync();
+                    Console.WriteLine(contenido);
+                }
+            });*/
+
+            //await Reintentar(ProcesarSaludo);
+
+            try
+            {
+                var contenido = await Reintentar(async () =>
+                {
+                    using (var respuesta = await httpClient.GetAsync($"{apiURL}/saludos/David"))
+                    {
+                        respuesta.EnsureSuccessStatusCode();
+                        return await respuesta.Content.ReadAsStringAsync();
+
+                    }
+                });
+
+                Console.WriteLine(contenido);
+            }
+            catch (Exception ex )
+            {
+
+                Console.WriteLine("Exepcion atrapada");
+            }
+            
+            loadingGIF.Visible = false;
+
+        }
+
+        private async Task ProcesarSaludo() 
+        {
+            using (var respuesta = await httpClient.GetAsync($"{apiURL}/saludos/David"))
+            {
+                respuesta.EnsureSuccessStatusCode();
+                var contenido = await respuesta.Content.ReadAsStringAsync();
+                Console.WriteLine(contenido);
+            }
+        }
+
+        private async Task Reintentar(Func<Task> f, int reintentos = 3, int tiempoEspera = 500) 
+        {
+            for (int i = 0; i < reintentos; i++)
+            {
+                try
+                {
+                    await f();
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    //loguear exepcion
+                    Console.WriteLine(ex.Message);
+                    await Task.Delay(tiempoEspera);
+                }
+            }
+        }
+
+        private async Task<T> Reintentar<T>(Func<Task<T>> f, int reintentos = 3, int tiempoEspera = 500)
+        {
+            for (int i = 0; i < reintentos -1; i++)
+            {
+                try
+                {
+                    return await f();
+                }
+                catch (Exception ex)
+                {
+                    //loguear exepcion
+                    Console.WriteLine(ex.Message);
+                    await Task.Delay(tiempoEspera);
+                }
+            }
+
+            return await f();
         }
 
         private async Task<string> ObtenerSaludos2(string nombre) 

@@ -27,6 +27,7 @@ namespace Asincronico
             //Thread.Sleep(5000);
 
             //Version Asincrona
+            /*
             cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
             loadingGIF.Visible = true;
@@ -62,7 +63,40 @@ namespace Asincronico
             loadingGIF.Visible = false;
             pgProcesamiento.Visible = false;
             pgProcesamiento.Value = 0;
+            */
 
+            //Sincronizacion
+            /*
+            loadingGIF.Visible = true;
+            Console.WriteLine($"Hilo antes del await: {Thread.CurrentThread.ManagedThreadId}");
+            await Task.Delay(500);
+            Console.WriteLine($"Hilo despuess del await: {Thread.CurrentThread.ManagedThreadId}");
+
+            await ObtenerSaludos2("David");
+            loadingGIF.Visible = false;
+            
+
+            CheckForIllegalCrossThreadCalls = true;
+            loadingGIF.Visible = true;
+            btnCancelar.Text = "antes";
+            Console.WriteLine($"Hilo antes del await: {Thread.CurrentThread.ManagedThreadId}");
+            await Task.Delay(1000).ConfigureAwait(continueOnCapturedContext: false);
+            Console.WriteLine($"Hilo despuess del await: {Thread.CurrentThread.ManagedThreadId}");
+            btnCancelar.Text = "despues";
+            loadingGIF.Visible = false;
+            */
+
+            //PAtron Reintento
+
+        }
+
+        private async Task<string> ObtenerSaludos2(string nombre) 
+        {
+            using (var respuesta = await httpClient.GetAsync($"{apiURL}/saludos/delay/{nombre}")) 
+            { 
+                var saludos = await respuesta.Content.ReadAsStringAsync();
+                return saludos;
+            }
         }
 
         private void ResportarProgresoTareas(int porcentaje) 

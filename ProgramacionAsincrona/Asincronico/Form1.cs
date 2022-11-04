@@ -168,6 +168,8 @@ namespace Asincronico
             loadingGIF.Visible = false;
             */
 
+            //Cancelacion de tareas
+            /*
             loadingGIF.Visible = true;
             var tarea = EvaluarValor(txtInput.Text);
             Console.WriteLine("Inicio");
@@ -189,6 +191,32 @@ namespace Asincronico
             Console.WriteLine("");
 
 
+
+            loadingGIF.Visible = false;
+            */
+
+            loadingGIF.Visible = true;
+
+            cancellationTokenSource = new CancellationTokenSource();
+
+            try
+            {
+                var resultado = await Task.Run(async () =>
+                {
+                    await Task.Delay(5000);
+                    return 7;
+                }).WithCancellation(cancellationTokenSource.Token);
+
+                Console.WriteLine(resultado);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+            finally 
+            { 
+                cancellationTokenSource.Dispose();
+            }
 
             loadingGIF.Visible = false;
 

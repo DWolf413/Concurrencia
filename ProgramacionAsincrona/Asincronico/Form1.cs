@@ -225,7 +225,7 @@ namespace Asincronico
 
             loadingGIF.Visible = true;
 
-            foreach(var nombre in GenerarNombres())
+            await foreach(var nombre in GenerarNombres())
             {
                 Console.WriteLine(nombre);
             }
@@ -234,9 +234,10 @@ namespace Asincronico
 
         }
 
-        private IEnumerable<string> GenerarNombres() 
+        private async IAsyncEnumerable<string> GenerarNombres() 
         {
             yield return "David";
+            await Task.Delay(2000);
             yield return "Sofia";
         }
 

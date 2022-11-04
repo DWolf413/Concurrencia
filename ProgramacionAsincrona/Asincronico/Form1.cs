@@ -35,7 +35,7 @@ namespace Asincronico
             // await Esperar();
             //var nombre = txtInput.Text;
 
-            var tarjetas =  await ObtenerTarjetasCredito(20);
+            //var tarjetas =  await ObtenerTarjetasCredito(20, cancellationTokenSource.Token);
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -44,6 +44,7 @@ namespace Asincronico
             {
                 //var saludo = await ObtenerSaludo(nombre);
                 //MessageBox.Show(saludo);
+                var tarjetas = await ObtenerTarjetasCredito(20, cancellationTokenSource.Token);
                 await ProcesarTarjetas(tarjetas, reportarProgreso, cancellationTokenSource.Token);
             }
             catch (HttpRequestException ex)
@@ -155,14 +156,22 @@ namespace Asincronico
            
         }
 
-        private async Task<List<string>> ObtenerTarjetasCredito(int cantidadTarjetas)
+        private async Task<List<string>> ObtenerTarjetasCredito(int cantidadTarjetas, CancellationToken cancellationToken = default)
         {
-            return await Task.Run(() =>
+            return await Task.Run( () =>
             {
                 var tarjetas = new List<string>();
                 for (int i = 0; i < cantidadTarjetas; i++)
                 {
+                    //await Task.Delay(1000);
                     tarjetas.Add(i.ToString().PadLeft(16, '0'));
+
+                    //Console.WriteLine($"Han sido generadas {tarjetas.Count} tarjetas");
+
+                    if (cancellationToken.IsCancellationRequested) 
+                    {
+                        throw new TaskCanceledException();
+                    }
                 }
 
                 return tarjetas;

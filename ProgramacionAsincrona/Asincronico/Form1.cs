@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -261,11 +262,36 @@ namespace Asincronico
             loadingGIF.Visible = true;
 
             //Anti-Patron: Sicrono dentro de asincrono
+            /*
             var valor = ObtenerValor().Result; //Bloquea hilo actual hasta obtener valor
             Console.WriteLine(valor);
 
             loadingGIF.Visible = false;
+            */
 
+            //Task.Factory.StarNew
+            loadingGIF.Visible = true;
+
+            //var resultadoStarNew = await await Task.Factory.StartNew(async () =>
+            var resultadoStarNew = await Task.Factory.StartNew(async () =>
+            {
+                await Task.Delay(1000);
+                return 7;
+            }).Unwrap();
+
+
+            var resultadoRun = await Task.Run(async () =>
+            {
+                await Task.Delay(1000);
+                return 7;
+            });
+
+            Console.WriteLine($"Resultado StarNew: {resultadoStarNew}");
+            Console.WriteLine($"---------------------------------");
+            Console.WriteLine($"Resultado Run: {resultadoRun}");
+
+
+            loadingGIF.Visible = false;
 
         }
 

@@ -10,7 +10,7 @@ namespace Asincronico.Codigo.Modulo5
     {
         private readonly CancellationTokenSource cancellationTokenSource;
 
-        public Intro_LINQ(CancellationTokenSource cancellationTokenSource)
+        public I_Intro_LINQ(CancellationTokenSource cancellationTokenSource)
         {
             this.cancellationTokenSource = cancellationTokenSource;
         }

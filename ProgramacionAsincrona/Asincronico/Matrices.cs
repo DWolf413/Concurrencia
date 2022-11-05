@@ -110,5 +110,26 @@ namespace Asincronico
                     }
                 });
         }
+
+        public static double[,] InicializarMatrizSaturado(int filas, int columnas)
+        {
+            double[,] matriz = new double[filas, columnas];
+
+            Parallel.For(0, filas, i => {
+                Parallel.For(0, columnas, j => {
+
+                    if (random == null)
+                    {
+                        var buffer = new byte[4];
+                        rng.GetBytes(buffer);
+                        random = new Random(BitConverter.ToInt32(buffer, 0));
+                    }
+
+                    matriz[i, j] = random.Next(100);
+                });
+            });
+
+            return matriz;
+        }
     }
 }

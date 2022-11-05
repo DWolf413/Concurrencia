@@ -158,6 +158,24 @@ namespace Asincronico
             // Video: PLINQ - ForAll - Procesando Resultados de Inmediato
             //new K_LINQ_ForAll().btnIniciar_Click();
 
+            // Modulo 6
+
+            // Video: Paralelismo innecesario
+            //await new A_Innecesario().btnIniciar_Click();
+
+            // Video: Condición de Carrera
+            //new B_Condicion_De_Carrera().btnIniciar_Click();
+
+            // Video: Sobre Saturación
+            //new C_Sobresaturacion().btnIniciar_Click();
+
+            // Video: Usando Una Clase No Segura En Hilos
+            //new D_Seguro_En_Hilos().btnIniciar_Click();
+
+            // Video: Como no usar Locks
+            //await new E_Locks().btnIniciar_Click();
+
+            loadingGIF.Visible = false;
 
         }
 

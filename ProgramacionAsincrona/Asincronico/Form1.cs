@@ -95,6 +95,18 @@ namespace Asincronico
             //cancellationTokenSource = new CancellationTokenSource();
             //await new R_Cancelando_Tareas_No_Cancelables(cancellationTokenSource).btnIniciar_Click(loadingGIF);
 
+            //Modulo 3 
+
+            // Video: Repasando IEnumerable y yield
+            //new A_Repaso_IEnumerable().btnIniciar_Click();
+
+            // Video: Streams Asíncronos
+            //await new B_Stream_Asincrono().btnIniciar_Click(loadingGIF);
+
+            // Video: Cancelando Streams Asíncronos
+            //cancellationTokenSource = new CancellationTokenSource();
+            //await new C_Cancelando_Stream_Asincrono(cancellationTokenSource).btnIniciar_Click(loadingGIF);
+            //cancellationTokenSource = null;
         }
 
 

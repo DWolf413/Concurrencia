@@ -20,8 +20,22 @@ namespace WebApi.Controllers
             //await Task.Delay(500);
             //Console.WriteLine($"Hilo despuess del await: {Thread.CurrentThread.ManagedThreadId}");
 
-            var esperar = RandomGen.NextDouble() * 10 + 1;
-            await Task.Delay((int)esperar * 1000);
+            //var esperar = RandomGen.NextDouble() * 10 + 1;
+            //await Task.Delay((int)esperar * 1000);
+            //return $"Hola, {nombre}!";
+
+            // El try no evita el colapso del web api
+            //try
+            //{
+            //    OperacionVoidAsync();
+            //}
+            //catch(Exception ex)
+            //{
+
+            //}
+
+            OperacionTaskAsync();
+            //OperacionVoidSync();
             return $"Hola, {nombre}!";
         }
 
@@ -39,7 +53,19 @@ namespace WebApi.Controllers
         }
 
         //Anti-Patron async void
+        // Anti-Patrón: No debemos usar async void
         private async void OperacionVoidAsync()
+        {
+            await Task.Delay(1);
+            throw new ApplicationException();
+        }
+
+        private void OperacionVoidSync()
+        {
+            throw new ApplicationException();
+        }
+
+        private async Task OperacionTaskAsync()
         {
             await Task.Delay(1);
             throw new ApplicationException();

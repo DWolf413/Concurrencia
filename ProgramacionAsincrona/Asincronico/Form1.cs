@@ -28,6 +28,8 @@ namespace Asincronico
         private async void btnIniciar_Click(object sender, EventArgs e)
         {
 
+            loadingGIF.Visible = true;
+
             // Video: UI Que no se Congela
             //new A_UI_Que_No_Se_Congela().VersionSincrona(loadingGIF);
             //await new A_UI_Que_No_Se_Congela().VersionAsincrona(loadingGIF);
@@ -116,6 +118,46 @@ namespace Asincronico
             //await new B_StartNew().btnIniciar_Click(loadingGIF);
 
             // Video: Async void [ver SaludosController en el proyecto de ASP.NET Core]
+
+            //Modulo 5
+
+            // Video: Con Task.WhenAll Ejecutamos Tareas Simultáneas
+            //await new A_TaskWhenAll().btnIniciar_Click();
+
+            // Video: Entendiendo Parallel.Fors
+            //new B_Intro_Parallel_For().btnIniciar_Click();
+
+            // Video: Ejemplo de Parallel.For - Velocidad
+            //await new C_Parallel_For_Matrices().btnIniciar_Click();
+
+            // Video: Iterando Colecciones en Paralelo con Parallel.ForEach
+            //new D_Parallel_ForEach().btnIniciar_Click();
+
+            // Video: Parallel.Invoke - Distintos Métodos en Paralelo
+            //new E_Parallel_Invoke().btnIniciar_Click();
+
+            // Video: Cancelando Tareas en Paralelo y Máximo Grado de Paralelismo
+            //cancellationTokenSource = new ancellationTokenSource();
+            //await new F_Maximo_Grado_Paralelismo(cancellationTokenSource).btnIniciar_Click();
+            //cancellationTokenSource = null;
+
+            // Video: Interlocked - Operaciones Simples Atómicas
+            //new G_Ejemplo_Interlocked().btnIniciar_Click();
+
+            // Video: Locks - Sincronizando Hilos
+            //new H_Ejemplo_Lock().btnIniciar_Click();
+
+            // Video: Introducción a PLINQ
+            //cancellationTokenSource = new CancellationTokenSource();
+            //new I_Intro_LINQ(cancellationTokenSource).btnIniciar_Click();
+            //cancellationTokenSource = null;
+
+            // Video: PLINQ - Operaciones de Agregado
+            //new J_Aggregate_LINQ().btnIniciar_Click();
+
+            // Video: PLINQ - ForAll - Procesando Resultados de Inmediato
+            //new K_LINQ_ForAll().btnIniciar_Click();
+
 
         }
 

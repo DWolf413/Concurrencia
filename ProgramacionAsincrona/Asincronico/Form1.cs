@@ -107,6 +107,16 @@ namespace Asincronico
             //cancellationTokenSource = new CancellationTokenSource();
             //await new C_Cancelando_Stream_Asincrono(cancellationTokenSource).btnIniciar_Click(loadingGIF);
             //cancellationTokenSource = null;
+
+            //Modulo 4
+            // Video: Síncrono dentro de Asíncrono - Bloqueo Mutuo
+            //await new A_Sincrono_Dentro_De_Asincrono().btnIniciar_Click(loadingGIF);
+
+            // Video: Evitar Task.Factory.StartNew
+            //await new B_StartNew().btnIniciar_Click(loadingGIF);
+
+            // Video: Async void [ver SaludosController en el proyecto de ASP.NET Core]
+
         }
 
 

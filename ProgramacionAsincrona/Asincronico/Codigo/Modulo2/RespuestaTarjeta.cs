@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Asincronico
+namespace Asincronico.Codigo.Modulo2
 {
     public class RespuestaTarjeta
     {
-        public string? Tarjeta { get; set; }
+        public string Tarjeta { get; set; }
         public bool Aprobada { get; set; }
     }
 }
